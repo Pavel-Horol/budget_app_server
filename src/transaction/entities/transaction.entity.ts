@@ -1,39 +1,40 @@
-import { Category } from "src/category/entities/category.entity";
-import { User } from "src/user/entities/user.entity";
-import { Column, CreateDateColumn, Entity, JoinColumn,ManyToOne, PrimaryColumn, UpdateDateColumn } from "typeorm";
+import { Category } from 'src/category/entities/category.entity'
+import { User } from 'src/user/entities/user.entity'
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryColumn,
+  UpdateDateColumn,
+} from 'typeorm'
 
 @Entity()
 export class Transaction {
+  @PrimaryColumn({ name: 'transaction_id' })
+  id: number
 
+  @ManyToOne(() => User, (user) => user.transactions, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'user_id' })
+  user: User
 
-    @PrimaryColumn({name: "transaction_id"})
-    id: number
+  @ManyToOne(() => Category, (category) => category.transactions)
+  @JoinColumn({ name: 'category_id' })
+  category: Category
 
-    @ManyToOne(() => User, (user) => user.transactions, {onDelete: "CASCADE"})
-    @JoinColumn({name: 'user_id'})
-    user: User
+  @Column()
+  title: string
 
-    @ManyToOne(() => Category, (category) => category.transactions)
-    @JoinColumn({name: 'category_id'})
-    category: Category
+  @Column({ nullable: true })
+  type: string
 
+  @Column()
+  amount: number
 
+  @CreateDateColumn()
+  crearedAt: Date
 
-
-    @Column()
-    title: string
-
-    @Column({nullable: true})
-    type: string
-
-    @Column()
-    amount: number
-
-    @CreateDateColumn()
-    crearedAt: Date
-
-    @UpdateDateColumn()
-    updateAt: Date
-
-
+  @UpdateDateColumn()
+  updateAt: Date
 }
