@@ -72,4 +72,15 @@ export class TransactionService {
     if (!transactions) throw new BadRequestException('Transactions not found')
     return transactions
   }
+  async findAllByType(id: number, type: string) {
+    const transactions = await this.transactionRepository.find({
+      where: {
+        user: { id },
+      },
+    })
+
+    const total = transactions.reduce((acc, trs) => acc + trs.amount, 0)
+
+    return total
+  }
 }
