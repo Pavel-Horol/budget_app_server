@@ -10,10 +10,12 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
+import { ApiProperty } from '@nestjs/swagger'
 
 @Entity()
 export class Category {
   @PrimaryGeneratedColumn({ name: 'category_id' })
+  @ApiProperty()
   id: number
 
   @ManyToOne(() => User, (user) => user.categories, { onDelete: 'CASCADE' })
@@ -24,11 +26,14 @@ export class Category {
   transactions: Transaction[]
 
   @Column()
+  @ApiProperty()
   title: string
 
   @CreateDateColumn()
+  @ApiProperty()
   crearedAt: Date
 
   @UpdateDateColumn()
+  @ApiProperty()
   updateAt: Date
 }

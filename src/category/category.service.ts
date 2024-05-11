@@ -21,7 +21,7 @@ export class CategoryService {
       user: { id },
       title: createCategoryDto.title,
     })
-    if (isCategoryExist)
+    if (isCategoryExist.length)
       throw new BadRequestException('Category already exists')
     const newCategory = {
       title: createCategoryDto.title,
