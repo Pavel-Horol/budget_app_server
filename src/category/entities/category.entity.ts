@@ -31,7 +31,7 @@ export class Category {
 
   @CreateDateColumn()
   @ApiProperty()
-  crearedAt: Date
+  createdAt: Date
 
   @UpdateDateColumn()
   @ApiProperty()

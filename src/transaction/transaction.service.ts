@@ -1,9 +1,15 @@
-import { BadRequestException, Injectable } from '@nestjs/common'
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common'
 import { CreateTransactionDto } from './dto/create-transaction.dto'
 import { UpdateTransactionDto } from './dto/update-transaction.dto'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Transaction } from './entities/transaction.entity'
 import { Repository } from 'typeorm'
+import { errorContext } from 'rxjs/internal/util/errorContext'
 
 @Injectable()
 export class TransactionService {
@@ -11,19 +17,31 @@ export class TransactionService {
     @InjectRepository(Transaction)
     private readonly transactionRepository: Repository<Transaction>,
   ) {}
-  create(createTransactionDto: CreateTransactionDto, id: number) {
+
+  async create(createTransactionDto: CreateTransactionDto, id: number) {
     const newTransaction = {
       title: createTransactionDto.title,
-      amount: createTransactionDto.amount,
+      amount: Number(createTransactionDto.amount),
       type: createTransactionDto.type,
-      user: { id },
       category: { id: +createTransactionDto.category },
+      user: { id },
+    }
+    for (const newTransactionElement in newTransaction) {
+      console.log(
+        newTransactionElement,
+        ' ',
+        typeof newTransaction[newTransactionElement],
+      )
     }
     if (!newTransaction)
-      throw new BadRequestException(
-        `Something went wrong while creating transaction`,
-      )
-    return this.transactionRepository.save(newTransaction)
+      throw new BadRequestException('Something went wrong...')
+    try {
+      return await this.transactionRepository.save(newTransaction)
+    } catch (error) {
+      console.table(createTransactionDto)
+      console.log('Error saving transaction:', error.message)
+      throw new InternalServerErrorException('Failed to save transaction.')
+    }
   }
 
   async findAll(id: number) {
@@ -33,7 +51,7 @@ export class TransactionService {
         category: true,
       },
       order: {
-        crearedAt: 'DESC',
+        createdAt: 'DESC',
       },
     })
     if (!transactions) throw new BadRequestException('Transactions not found')
@@ -57,18 +75,21 @@ export class TransactionService {
     await this.transactionRepository.update(id, updateTransactionDto)
   }
 
-  remove(id: number) {
-    const transactions = this.transactionRepository.findOne({
+  async remove(id: number) {
+    const transaction = await this.transactionRepository.findOne({
       where: { id },
     })
-    if (!transactions) throw new BadRequestException('Transaction not found')
-    return this.transactionRepository.delete(id)
+
+    if (!transaction) throw new NotFoundException('Transaction not found')
+
+    return await this.transactionRepository.delete(id)
   }
+
   async findAllWithPagination(id: number, page: number, limit: number) {
     const transactions = await this.transactionRepository.find({
       where: { user: { id } },
       relations: { user: true, category: true },
-      order: { crearedAt: 'DESC' },
+      order: { createdAt: 'DESC' },
       take: limit,
       skip: (page - 1) * limit,
     })

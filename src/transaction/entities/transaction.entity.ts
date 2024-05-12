@@ -6,18 +6,22 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  PrimaryColumn,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
-import { ApiProperty } from '@nestjs/swagger'
 
 @Entity()
 export class Transaction {
-  @PrimaryColumn({ name: 'transaction_id' })
-  @ApiProperty()
+  @PrimaryGeneratedColumn({ name: 'transaction_id' })
   id: number
 
-  @ManyToOne(() => User, (user) => user.transactions, { onDelete: 'CASCADE' })
+  @Column()
+  title: string
+
+  @Column({ nullable: true })
+  type: string
+
+  @ManyToOne(() => User, (user) => user.transactions)
   @JoinColumn({ name: 'user_id' })
   user: User
 
@@ -28,22 +32,11 @@ export class Transaction {
   category: Category
 
   @Column()
-  @ApiProperty()
-  title: string
-
-  @Column({ nullable: true })
-  @ApiProperty()
-  type: string
-
-  @Column()
-  @ApiProperty()
   amount: number
 
   @CreateDateColumn()
-  @ApiProperty()
-  crearedAt: Date
+  createdAt: Date
 
   @UpdateDateColumn()
-  @ApiProperty()
-  updateAt: Date
+  updatedAt: Date
 }

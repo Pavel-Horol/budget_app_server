@@ -8,6 +8,8 @@ import { TransactionModule } from './transaction/transaction.module'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { join } from 'path'
+import { DevtoolsModule } from '@nestjs/devtools-integration'
+import * as process from 'node:process'
 
 @Module({
   imports: [

@@ -26,7 +26,7 @@ export class AuthorGuard implements CanActivate {
         entity = await this.categoryService.findOne(id)
         break
       default:
-        throw new NotFoundException('Something went wrong')
+        throw new NotFoundException('Something went wrong, while delete')
     }
     const user = request.user
     if (entity && user && entity.user.id === user.id) {

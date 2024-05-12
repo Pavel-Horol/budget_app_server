@@ -1,27 +1,27 @@
-import { Category } from '../../category/entities/category.entity'
-import { User } from '../../user/entities/user.entity'
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator'
-import { ApiProperty } from '@nestjs/swagger'
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  MinLength,
+} from 'class-validator'
+import { Category } from 'src/category/entities/category.entity'
+import { User } from 'src/user/entities/user.entity'
 
 export class CreateTransactionDto {
   @IsNotEmpty()
-  @ApiProperty()
   title: string
 
   @IsNotEmpty()
   @IsNumber()
-  @ApiProperty()
   amount: number
 
   @IsString()
-  @ApiProperty()
+  @MinLength(4)
   type: 'expense' | 'income'
 
   @IsNotEmpty()
-  @ApiProperty()
   category: Category
-
-  @IsNotEmpty()
-  @ApiProperty()
-  user: User
+  @IsOptional()
+  user?: User
 }

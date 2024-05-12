@@ -26,6 +26,7 @@ export class TransactionController {
   @UsePipes(new ValidationPipe())
   @UseGuards(JwtAuthGuard)
   create(@Body() createTransactionDto: CreateTransactionDto, @Req() req) {
+    console.log('went to this point')
     return this.transactionService.create(createTransactionDto, +req.user.id)
   }
 
