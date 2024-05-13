@@ -27,7 +27,7 @@ import * as process from 'node:process'
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        synchronize: true,
+        synchronize: false,
         logger: 'advanced-console',
         entities: [join(process.cwd(), 'dist/**/*.entity{.ts,.js}')],
       }),
